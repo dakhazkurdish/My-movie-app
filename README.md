@@ -23,31 +23,30 @@
         <button onclick="showhome()" class="bg-slate-800 hover:bg-slate-700 text-sm px-4 py-2 rounded-lg transition">
           ← گەڕانەوە بۆ سەرپەڕە
         </button>
-        <span class="text-xs text-slate-400">ئەگەر لێنەدا، کلیک لە سێرڤەری ٢ بکە</span>
+        <span class="text-xs text-green-400">سێرڤەری بێ ڕیکلام (VidLink)</span>
       </div>
 
-      <!-- تێبینی: بەکارهێنانی ساندبۆکس بۆ ڕێگری لە پۆپ-ئەپ و تابی زیادە -->
       <div class="aspect-video w-full bg-black rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
         <iframe 
           id="videoplayer" 
           class="w-full h-full border-0" 
           allowfullscreen 
-          sandbox="allow-scripts allow-same-origin allow-forms">
+          allow="autoplay; encrypted-media; picture-in-picture">
         </iframe>
       </div>
 
       <div class="flex items-center justify-between flex-wrap gap-2">
         <h2 id="detailtitle" class="text-xl font-bold text-blue-400"></h2>
         
-        <!-- دوگمەی گۆڕینی سێرڤەر بۆ کاتی پێویست -->
+        <!-- گۆڕینی سێرڤەر -->
         <div class="flex gap-2">
-          <button onclick="switchServer(1)" class="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1.5 rounded text-white">سێرڤەری ١</button>
-          <button onclick="switchServer(2)" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1.5 rounded text-white">سێرڤەری ٢</button>
+          <button onclick="switchServer(1)" class="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1.5 rounded text-white">سێرڤەری ١ (VidLink)</button>
+          <button onclick="switchServer(2)" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1.5 rounded text-white">سێرڤەری ٢ (EmbedSU)</button>
         </div>
       </div>
     </div>
 
-    <!-- بەشی سەرەکی و لیستەی فلیمەکان -->
+    <!-- بەشی سەرەکی -->
     <div id="homesection" class="space-y-8 text-right">
       <div>
         <h2 class="text-lg font-bold border-b border-slate-800 pb-2 mb-4 text-red-400">بەرهەمەکان (Trending)</h2>
@@ -89,7 +88,6 @@
       document.getElementById("playersection").classList.remove("hidden");
       document.getElementById("detailtitle").innerText = title;
       
-      // سێرڤەری یەکەم (multiembed کەمترین ڕیکلامی هەیە)
       switchServer(1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -98,9 +96,11 @@
       if (!currentMovieId) return;
       var player = document.getElementById("videoplayer");
       if (serverNum === 1) {
-        player.src = "https://multiembed.mov/?video_id=" + currentMovieId + "&tmdb=1";
+        // VidLink سێرڤەرێکی زۆر خاوێنە و پەنجەرەی زیادە ناکاتەوە
+        player.src = "https://vidlink.pro/movie/" + currentMovieId;
       } else {
-        player.src = "https://vidsrc.cc/v2/embed/movie/" + currentMovieId;
+        // Embed.su جێگرەوەی دووەم
+        player.src = "https://embed.su/embed/movie/" + currentMovieId;
       }
     }
 
