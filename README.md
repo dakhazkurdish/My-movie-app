@@ -17,16 +17,37 @@
 
   <main class="p-4 max-w-6xl mx-auto w-full">
 
+    <!-- بەشی پلەیەر -->
     <div id="playersection" class="hidden space-y-4">
-      <button onclick="showhome()" class="bg-slate-800 text-sm px-4 py-2 rounded-lg">
-        ← گەڕانەوە
-      </button>
-      <div class="aspect-video w-full bg-black rounded-xl overflow-hidden border border-slate-800">
-        <iframe id="videoplayer" class="w-full h-full border-0" allowfullscreen></iframe>
+      <div class="flex items-center justify-between">
+        <button onclick="showhome()" class="bg-slate-800 hover:bg-slate-700 text-sm px-4 py-2 rounded-lg transition">
+          ← گەڕانەوە بۆ سەرپەڕە
+        </button>
+        <span class="text-xs text-slate-400">ئەگەر لێنەدا، کلیک لە سێرڤەری ٢ بکە</span>
       </div>
-      <h2 id="detailtitle" class="text-xl font-bold text-blue-400"></h2>
+
+      <!-- تێبینی: بەکارهێنانی ساندبۆکس بۆ ڕێگری لە پۆپ-ئەپ و تابی زیادە -->
+      <div class="aspect-video w-full bg-black rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
+        <iframe 
+          id="videoplayer" 
+          class="w-full h-full border-0" 
+          allowfullscreen 
+          sandbox="allow-scripts allow-same-origin allow-forms">
+        </iframe>
+      </div>
+
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <h2 id="detailtitle" class="text-xl font-bold text-blue-400"></h2>
+        
+        <!-- دوگمەی گۆڕینی سێرڤەر بۆ کاتی پێویست -->
+        <div class="flex gap-2">
+          <button onclick="switchServer(1)" class="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1.5 rounded text-white">سێرڤەری ١</button>
+          <button onclick="switchServer(2)" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1.5 rounded text-white">سێرڤەری ٢</button>
+        </div>
+      </div>
     </div>
 
+    <!-- بەشی سەرەکی و لیستەی فلیمەکان -->
     <div id="homesection" class="space-y-8 text-right">
       <div>
         <h2 class="text-lg font-bold border-b border-slate-800 pb-2 mb-4 text-red-400">بەرهەمەکان (Trending)</h2>
@@ -37,6 +58,8 @@
   </main>
 
   <script>
+    var currentMovieId = null;
+
     var movies = [
       { id: 27205, title: "Inception", img: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg", rate: "8.4" },
       { id: 157336, title: "Interstellar", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", rate: "8.4" },
@@ -52,7 +75,7 @@
       for (var i = 0; i < movies.length; i++) {
         var m = movies[i];
         grid.innerHTML += 
-          '<div onclick="playmovie(' + m.id + ', \'' + m.title + '\')" class="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden cursor-pointer p-2">' +
+          '<div onclick="playmovie(' + m.id + ', \'' + m.title + '\')" class="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden cursor-pointer p-2 hover:border-blue-500 transition">' +
             '<img src="' + m.img + '" class="w-full aspect-[2/3] object-cover rounded mb-2" />' +
             '<div class="text-xs font-bold truncate">' + m.title + '</div>' +
             '<div class="text-xs text-yellow-400 mt-1">★ ' + m.rate + '</div>' +
@@ -61,11 +84,24 @@
     };
 
     function playmovie(id, title) {
+      currentMovieId = id;
       document.getElementById("homesection").classList.add("hidden");
       document.getElementById("playersection").classList.remove("hidden");
       document.getElementById("detailtitle").innerText = title;
-      document.getElementById("videoplayer").src = "https://vidsrc.to/embed/movie/" + id;
+      
+      // سێرڤەری یەکەم (multiembed کەمترین ڕیکلامی هەیە)
+      switchServer(1);
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function switchServer(serverNum) {
+      if (!currentMovieId) return;
+      var player = document.getElementById("videoplayer");
+      if (serverNum === 1) {
+        player.src = "https://multiembed.mov/?video_id=" + currentMovieId + "&tmdb=1";
+      } else {
+        player.src = "https://vidsrc.cc/v2/embed/movie/" + currentMovieId;
+      }
     }
 
     function showhome() {
